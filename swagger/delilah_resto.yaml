@@ -1,0 +1,746 @@
+---
+swagger: "2.0"
+info:
+  description: "This is the OpenAPI specification for the Delilah Restó system"
+  version: "1.0.0"
+  title: "Delilah Restó"
+  contact:
+    email: "ibrian_84@hotmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "virtserver.swaggerhub.com"
+basePath: "/IBRIAN/delilah_resto/1.0.0"
+tags:
+- name: "sign-up"
+- name: "login"
+- name: "user"
+- name: "product"
+- name: "order"
+schemes:
+- "https"
+paths:
+  /sign-up:
+    post:
+      tags:
+      - "sign-up"
+      summary: "Creates an user"
+      description: "A new user can be created by sending all required user information."
+      operationId: "sign-up"
+      consumes:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "The data of the user to be created"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        "500":
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /login:
+    post:
+      tags:
+      - "login"
+      summary: "Authenticates an user"
+      description: "An user can be autheticated by sending user credentials."
+      operationId: "login"
+      consumes:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "The data of the user to be authenticated"
+        required: true
+        schema:
+          $ref: "#/definitions/UserCredentials"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/LoginSuccessfulResponse"
+        "500":
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /users:
+    get:
+      tags:
+      - "user"
+      summary: "Fetches all registered users and their data"
+      description: "All users registered can be fetched with this endpoint. All users\
+        \ are fetched as well as their complete information. Only users with an \"\
+        Administrator\" role can fetch users."
+      operationId: "fetchUsers"
+      parameters:
+      - name: "authorization"
+        in: "header"
+        description: "Bearer Type JSON Web Token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/User"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /users/{username}:
+    get:
+      tags:
+      - "user"
+      summary: "Fetches an specific user"
+      description: "A determined user can be fetched as well as its complete information.\
+        \ Only users with an \"Administrator\" role can fetch users."
+      operationId: "fetchUser"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "The desired user's username"
+        required: true
+        type: "string"
+      - name: "authorization"
+        in: "header"
+        description: "Bearer Type JSON Web Token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/User"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /products:
+    get:
+      tags:
+      - "product"
+      summary: "Fetches all products"
+      description: "All registered products can be fetched."
+      operationId: "getProducts"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "authorization"
+        in: "header"
+        description: "Bearer Type JSON Web Token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Product"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      tags:
+      - "product"
+      summary: "Creates a new product"
+      description: "A new product can be created by sending all its information. Only\
+        \ users with an \"Administrator\" role can create products."
+      operationId: "createProduct"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "authorization"
+        in: "header"
+        description: "Bearer Type JSON Web Token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "The product data"
+        required: true
+        schema:
+          $ref: "#/definitions/Product"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /products/{productId}:
+    get:
+      tags:
+      - "product"
+      summary: "Fetches an specific product"
+      description: "A determined product can be fetched as well as its complete information."
+      operationId: "getProduct"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "productId"
+        in: "path"
+        description: "The desired product id"
+        required: true
+        type: "integer"
+      - name: "authorization"
+        in: "header"
+        description: "Bearer Type JSON Web Token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Product"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    put:
+      tags:
+      - "product"
+      summary: "Updates the data of an specific product"
+      description: "All the information related to a product can be updated. Only\
+        \ users with an \"Administrator\" role can update product data."
+      operationId: "updateProduct"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "productId"
+        in: "path"
+        description: "The desired product id"
+        required: true
+        type: "integer"
+      - name: "authorization"
+        in: "header"
+        description: "Bearer Type JSON Web Token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "The product data"
+        required: true
+        schema:
+          $ref: "#/definitions/Product"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      tags:
+      - "product"
+      summary: "Deletes a product"
+      description: "The indicated product can be deleted. This action wil cause the\
+        \ product to be inaccesible. Only users with an \"Administrator\" role can\
+        \ create users."
+      operationId: "deleteProduct"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "productId"
+        in: "path"
+        description: "The desired product id"
+        required: true
+        type: "integer"
+      - name: "authorization"
+        in: "header"
+        description: "Bearer Type JSON Web Token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /products/users/{username}:
+    get:
+      tags:
+      - "product"
+      summary: "Fetches an users's all the favorite products"
+      description: "All the products marked as favorite by a determined user can be\
+        \ fetched by indicating the username of the desired user."
+      operationId: "getUserProducts"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "The desired user's username"
+        required: true
+        type: "string"
+      - name: "authorization"
+        in: "header"
+        description: "Bearer Type JSON Web Token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Product"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /orders:
+    get:
+      tags:
+      - "order"
+      summary: "Fetches all orders"
+      description: "All the orders can be fetched. Only users with an \"Administrator\"\
+        \ role can fetch all orders."
+      operationId: "getOrders"
+      parameters:
+      - name: "authorization"
+        in: "header"
+        description: "Bearer Type JSON Web Token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Order"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      tags:
+      - "order"
+      summary: "Creates a new order"
+      description: "A new order can be created by sending all its information."
+      operationId: "createOrder"
+      parameters:
+      - name: "authorization"
+        in: "header"
+        description: "Bearer Type JSON Web Token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "The product information"
+        required: true
+        schema:
+          $ref: "#/definitions/OrderCreate"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /orders/{orderId}:
+    get:
+      tags:
+      - "order"
+      summary: "Fetches an specific order"
+      description: "An order can be fetched. Only users with an \"Administrator\"\
+        \ role can fetch an specified order."
+      operationId: "getOrder"
+      parameters:
+      - name: "orderId"
+        in: "path"
+        description: "The desired order id"
+        required: true
+        type: "integer"
+      - name: "authorization"
+        in: "header"
+        description: "Bearer Type JSON Web Token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Order"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    put:
+      tags:
+      - "order"
+      summary: "Updates an order status"
+      description: "An order status can be updated. Only users with an \"Administrator\"\
+        \ role can create users."
+      operationId: "updateOrder"
+      parameters:
+      - name: "orderId"
+        in: "path"
+        description: "The desired order id"
+        required: true
+        type: "integer"
+      - name: "authorization"
+        in: "header"
+        description: "Bearer Type JSON Web Token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "The product information"
+        required: true
+        schema:
+          $ref: "#/definitions/OrderUpdate"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      tags:
+      - "order"
+      summary: "Deletes an order"
+      description: "An order can be deleted. This action wil cause the order to be\
+        \ inaccesible. Only users with an \"Administrator\" role can create users."
+      operationId: "deleteOrder"
+      parameters:
+      - name: "orderId"
+        in: "path"
+        description: "The desired order id"
+        required: true
+        type: "integer"
+      - name: "authorization"
+        in: "header"
+        description: "Bearer Type JSON Web Token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /orders/users/{username}:
+    get:
+      tags:
+      - "order"
+      summary: "Fetches an users's orders"
+      description: "All orders related to an specific user can be fetched."
+      operationId: "getUserOrders"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "The desired user's username"
+        required: true
+        type: "string"
+      - name: "authorization"
+        in: "header"
+        description: "Bearer Type JSON Web Token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Order"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+definitions:
+  UserCredentials:
+    type: "object"
+    properties:
+      usernameOrUserEmail:
+        type: "string"
+        example: "festo@outlook.com"
+      userPassword:
+        type: "string"
+        format: "password"
+        example: "Festorazzi"
+  User:
+    type: "object"
+    required:
+    - "userAddress"
+    - "userEmail"
+    - "userFirstName"
+    - "userLastName"
+    - "userPassword"
+    - "userPhoneNumber"
+    - "userRole"
+    - "username"
+    properties:
+      userFirstName:
+        type: "string"
+        example: "Ibrian"
+      userLastName:
+        type: "string"
+        example: "Festorazzi"
+      userEmail:
+        type: "string"
+        format: "email"
+        example: "ibrian_84@hotmail.com"
+      userPhoneNumber:
+        type: "string"
+        example: "123939938"
+      userAddress:
+        type: "string"
+        example: "m89 c31"
+      username:
+        type: "string"
+        example: "ibra"
+      userPassword:
+        type: "string"
+        format: "password"
+        example: "1234"
+      userRole:
+        type: "string"
+        example: "Administrator"
+  Product:
+    type: "object"
+    required:
+    - "productAvailable"
+    - "productDescription"
+    - "productName"
+    - "productPicturePath"
+    - "productPrice"
+    properties:
+      productName:
+        type: "string"
+        example: "Hamburguesa"
+      productDescription:
+        type: "string"
+        example: "Simple"
+      productPrice:
+        type: "integer"
+        example: 156
+      productPicturePath:
+        type: "string"
+        example: "C:\\Users\\IBRIAN\\Desktop\\Delilah Restó\\delilah_resto_v2.1\\\
+          product_pictures"
+      productAvailable:
+        type: "integer"
+        example: 1
+  Order:
+    type: "object"
+    required:
+    - "orderCreationDate"
+    - "orderId"
+    - "orderPaymentMethod"
+    - "orderStatus"
+    - "productsInOrder"
+    - "userId"
+    properties:
+      orderId:
+        type: "integer"
+        example: 6
+      orderPaymentMethod:
+        type: "string"
+        example: "Tarjeta"
+      orderStatus:
+        type: "string"
+        example: "Entregado"
+      orderCreationDate:
+        type: "string"
+        example: "2021-01-16T00:00:00.000Z"
+      userId:
+        type: "integer"
+        example: 7
+      productsInOrder:
+        $ref: "#/definitions/ProductInOrder"
+  OrderCreate:
+    type: "object"
+    required:
+    - "orderPaymentMethod"
+    - "orderStatus"
+    - "productsInOrder"
+    - "userId"
+    properties:
+      orderPaymentMethod:
+        type: "string"
+        example: "Efectivo"
+      orderStatus:
+        type: "string"
+        example: "Nuevo"
+      userId:
+        type: "integer"
+        example: 4
+      productsInOrder:
+        $ref: "#/definitions/ProductInOrderCreate"
+  OrderUpdate:
+    type: "object"
+    required:
+    - "orderStatus"
+    properties:
+      orderStatus:
+        type: "string"
+        example: "Enviando"
+  ProductInOrder:
+    type: "object"
+    required:
+    - "product"
+    - "quantity"
+    properties:
+      product:
+        $ref: "#/definitions/Product"
+      quantity:
+        type: "integer"
+        example: 2
+  ProductInOrderCreate:
+    type: "object"
+    required:
+    - "quantity"
+    properties:
+      product:
+        type: "integer"
+        example: 23
+      quantity:
+        type: "integer"
+        example: 2
+  LoginSuccessfulResponse:
+    type: "object"
+    required:
+    - "jwt"
+    properties:
+      description:
+        type: "string"
+        example: "User successfully authenticated"
+      jwt:
+        type: "string"
+        format: "jwt"
+        example: "eyJhbGciOiJIUzI1NasdaI6IkpXVCJ9.eyg123g2341c2Vasdd213SI6IlVzZXIiLCJpYXQiOjE1OTkzNjU1MDgsImV4cCI6MTU5OTQwMTUwOH0.jZIKwzK9VQlDFUpjLM6066SE9k-HH5LFvvLUTYckK7A"
+  SuccessResponse:
+    type: "object"
+    properties:
+      description:
+        type: "string"
+        example: "User successfully created"
+  ErrorResponse:
+    type: "object"
+    properties:
+      errordescription:
+        type: "string"
+        example: "Unable to create user"
+      errorDetail:
+        type: "string"
+        example: "There is already an user registered with this email"
